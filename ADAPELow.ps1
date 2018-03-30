@@ -4,8 +4,6 @@ Developed by Hausec
 Credit for scripts goes to Tim Medin, the people working on Empire, BloodHound, and PowerSploit 
 #>
 
-#run as admin check
-
 #create folder 
 $path = "$env:userprofile\Documents\Capture"
 If(!(test-path $path))
