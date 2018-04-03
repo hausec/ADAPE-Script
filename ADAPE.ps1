@@ -20,7 +20,7 @@ $path = "C:\Capture"
 If(!(test-path $path))
 {
       New-Item -ItemType Directory -Force -Path $path | Out-Null
-	  Write-Host "Created C:\Capture folder!" -ForegroundColor Green
+	  Write-Host "Created $path!" -ForegroundColor Green
 }
 else
 {
@@ -101,8 +101,8 @@ Import-Module PowerView.ps1
 Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
 Invoke-ShareFinder -CheckShareAccess -Threads 20 | Out-File $path\ShareFinder.txt
 Write-Host "Looking for sensitive files (Grab a coffee, this might take awhile)" -ForegroundColor Yellow
-#Edit the terms if you want to look for different strings in files. Remove this cmdlet if it takes too long.
-Invoke-FileFinder -Verbose -Terms accounts,ssn,password,secret,admin -OutFile $path\FileFinder.txt
+#Edit the terms if you want to look for different strings in files. Comment out this cmdlet if it takes too long.
+Invoke-FileFinder -Verbose -Terms ccn,cvv,ssn,password,secret -OutFile $path\FileFinder.txt
 Write-Host "Checking for exploitable systems..." -ForegroundColor Yellow
 Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
 
