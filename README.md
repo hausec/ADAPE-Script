@@ -21,15 +21,16 @@ This script will do the following:
 
 •	Search for open SMB shares on the network 
 
-•	Search those shares and other accessible directories for sensitive files and strings (Passwords, PII, or whatever your want, really). By default it's 		looking for the terms "password,ssn". If you wanted to search for CVVs for example, you'd just add it next to 'ssn', e.g. password,ssn,cvv 
+•	Search those shares and other accessible directories for sensitive files and strings (Passwords, PII, or whatever your want, really). By default it's looking for the terms "password,ssn". If you wanted to search for CVVs for example, you'd just add it next to 'ssn', e.g. password,ssn,cvv 
 
 •	Check patches of systems on the network
 
 The script will ask to run as admin, as it requires it. If you do not have admin access, it will only run the privilege escalation module. If you're being blocked by UAC, I suggest running a bypass UAC script (https://raw.githubusercontent.com/samratashok/nishang/master/Escalation/Invoke-PsUACme.ps1). 
 
-After running the .ps1, it will create the capture file and start creating module folders to store the downloaded scripts into. Everything captured is stored and zipped up into the C:/Capture.zip file. This can be changed, i.e. if C:/ cannot be be written to, change the directory in the code under the comment that says "Change storage directory here". Bloodhound's "Sharphound.ps1" has recently been updated to Windows Defender to be flagged as malicious, but ironically the Sharphound.exe has not. I've switched the script to use the .exe by default, as the new 1.5 version of Sharphound is still not being picked up by any AV engine (according to Virus Total). If you don't want to use the .exe, you can comment that section out and use the .ps1 still. I've obfuscated the .ps1 section a bit by downloaded the .ps1 as a string, base64 encoding it, then decoding it and storing it as a new .ps1 to change the signature. 
+After running the .ps1, it will create the capture file and start creating module folders to store the downloaded scripts into. Everything captured is stored and zipped up into the C:/Capture.zip file. This can be changed, i.e. if C:/ cannot be be written to, change the directory in the code under the comment that says "Change storage directory here". Bloodhound's "Sharphound.ps1" has recently been updated to Windows Defender to be flagged as malicious, but ironically the Sharphound.exe has not. I've switched the script to use the .exe by default, as the new 1.5 version of Sharphound is still not being picked up by any AV engine (according to Virus Total). If you don't want to use the .exe, you can comment that section out and use the .ps1 still. I've obfuscated the .ps1 section a bit by downloaded the .ps1 as a string, base64 encoding it, then decoding it and storing it as a new .ps1 to change the signature (now only Windows Defender catches it, hence the .exe usage). 
+At the end of the script, it deletes all the folders it created (except the .zip file, obviously). 
 
-At the end of the script, it deletes all the folders it created (except the .zip file, obviously). GPP password checking  and searching sensitive files takes awhile, so don't be surprised if this script takes 20-30 minutes to finish depending on the number of domain controllers and strings you're searching for. Comment those sections out if they take too long to run. 
+GPP password checking  and searching sensitive files takes awhile, so don't be surprised if this script takes 30 minutes to finish depending on the number of domain controllers and strings you're searching for. Comment those sections out if they take too long to run. 
 
 Usage: Just run the script
 
