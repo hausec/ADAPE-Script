@@ -57,6 +57,7 @@ If(!(test-path $modulepath/Sharp))
 Write-Host "Fetching Sharphound.exe..."
 Copy-Item "$modules/Sharphound.exe" -Destination "$modulepath/Sharp"
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
+& "$modulepath/Sharp/SharpHound.exe" --Stealth --CSVFolder $path
 #PrivEsc
 If(!(test-path $modulepath/PrivEsc))
 {
