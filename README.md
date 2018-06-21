@@ -1,13 +1,5 @@
 # Active Directory Assessment and Privilege Escalation Script
-In my engagements and assessments, I often run a few powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I use routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. This script uses the following .ps1s and their functions:
-
-•	Kerberoast (https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1)
-
-•	BloodHound (https://github.com/BloodHoundAD/BloodHound)
-
-•	PowerUp (https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1)
-
-•	PowerView (https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon)
+In my engagements and assessments, I often run a few powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I use routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. 
 
 This script will do the following:
 
@@ -26,6 +18,18 @@ This script will do the following:
 •	Check patches of systems on the network
 
 There's two .ps1 scripts here: LADAPE and ADAPE. LADAPE is the local version, meaning it will not reach out to the internet and fetch the modules, they must be present in the same folder as the LADAPE script. I made this because some sites don't allow connections to github, don't like the cert github has, or don't even have internet, thus the need for a full local script.
+
+The modules LADAPE uses are linked here and named the same way, so just download the following modules and put them in the same folder as LADAPE.ps1 and it should execute.
+
+Kerberoast - https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
+
+Bloodhound - https://github.com/BloodHoundAD/BloodHound/blob/master/Ingestors/SharpHound.exe
+
+Get-GPPP - https://github.com/EmpireProject/Empire/blob/master/data/module_source/privesc/Get-GPPPassword.ps1
+
+PowerUp - https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1
+
+PowerView - https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1
 
 The script will ask to run as admin, as it requires it. If you do not have admin access, it will only run the privilege escalation module. If you're being blocked by UAC, I suggest running a bypass UAC script (https://raw.githubusercontent.com/samratashok/nishang/master/Escalation/Invoke-PsUACme.ps1). 
 

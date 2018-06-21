@@ -42,7 +42,7 @@ If(!(test-path $modulepath/Kerberoast))
 
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
-Copy-Item "$modules/Kerberoast.ps1" -Destination "$modulepath/Kerberoast/Kerberoast.psm1"
+Copy-Item "$modules/Invoke-Kerberoast.ps1" -Destination "$modulepath/Kerberoast/Kerberoast.psm1"
 #Run Kerberoast
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
