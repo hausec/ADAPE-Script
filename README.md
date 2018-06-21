@@ -25,6 +25,8 @@ This script will do the following:
 
 •	Check patches of systems on the network
 
+There's two .ps1 scripts here: LADAPE and ADAPE. LADAPE is the local version, meaning it will not reach out to the internet and fetch the modules, they must be present in the same folder as the LADAPE script. I made this because some sites don't allow connections to github, don't like the cert github has, or don't even have internet, thus the need for a full local script.
+
 The script will ask to run as admin, as it requires it. If you do not have admin access, it will only run the privilege escalation module. If you're being blocked by UAC, I suggest running a bypass UAC script (https://raw.githubusercontent.com/samratashok/nishang/master/Escalation/Invoke-PsUACme.ps1). 
 
 After running the .ps1, it will create the capture file and start creating module folders to store the downloaded scripts into. Everything captured is stored and zipped up into the C:/Capture.zip file. This can be changed, i.e. if C:/ cannot be be written to, change the directory in the code under the comment that says "Change storage directory here". Bloodhound's "Sharphound.ps1" has recently been updated to Windows Defender to be flagged as malicious, but ironically the Sharphound.exe has not. I've switched the script to use the .exe by default, as the new 1.5 version of Sharphound is still not being picked up by any AV engine (according to Virus Total). If you don't want to use the .exe, you can comment that section out and use the .ps1 still. I've obfuscated the .ps1 section a bit by downloaded the .ps1 as a string, base64 encoding it, then decoding it and storing it as a new .ps1 to change the signature (now only Windows Defender catches it, hence the .exe usage). 
