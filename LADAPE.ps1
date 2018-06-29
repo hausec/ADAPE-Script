@@ -47,7 +47,7 @@ Copy-Item "$modules/Invoke-Kerberoast.ps1" -Destination "$modulepath/Kerberoast/
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
 Write-Host "Running Kerberoast" -ForegroundColor  Yellow
-Invoke-Kerberoast | Out-File $path\Kerberoast.krb 
+Invoke-Kerberoast -OutputFormat Hashcat | Out-File $path\Kerberoast.krb 
 
 #BloodHound EXE method
 If(!(test-path $modulepath/Sharp))
