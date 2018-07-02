@@ -216,6 +216,12 @@ If (Test-Path $modulepath/PowerView/PowerView.psm1 -PathType Leaf)
 	Invoke-FileFinder -Verbose -Terms password -OutFile $path\FileFinder.txt
 	Write-Host "Checking for exploitable systems..." -ForegroundColor Yellow
 	Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
+	Write-Host "Searching for file servers..."
+	Get-NetFileServer | Out-File $path\FileServers.txt
+	Write-Host "Checking for attached shares..."
+	Get-NetShare | Out-File $path\NetShare.txt
+	Write-Host "Grabbing Domain Policy..."
+	Get-DomainPolicy | Out-File $path\DomainPolicy.txt
 }
 else
 {
@@ -233,6 +239,12 @@ else
 				Invoke-FileFinder -Verbose -Terms password -OutFile $path\FileFinder.txt
 				Write-Host "Checking for exploitable systems..." -ForegroundColor Yellow
 				Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
+				Write-Host "Searching for file servers..."
+				Get-NetFileServer | Out-File $path\FileServers.txt
+				Write-Host "Checking for attached shares..."
+				Get-NetShare | Out-File $path\NetShare.txt
+				Write-Host "Grabbing Domain Policy..."
+				Get-DomainPolicy | Out-File $path\DomainPolicy.txt
 			}
 		else
 			{
