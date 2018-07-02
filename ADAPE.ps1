@@ -31,6 +31,7 @@ $client = New-Object System.Net.WebClient
 $ErrorActionPreference= 'silentlycontinue'
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
+
 #Kerberoast
 If(!(test-path $modulepath/Kerberoast))
 {
@@ -164,6 +165,7 @@ else
 				Write-Host "Error copying from local file...is the module in the same folder as this script?" -ForegroundColor Red
 			}
 }
+
 #GPP Password check
 If(!(test-path $modulepath/GPP))
 {
@@ -260,4 +262,4 @@ Remove-Item -Recurse -Force "$modulepath/Sharp"
 Remove-Item -Recurse -Force "$modulepath/PowerView"
 Remove-Item -Recurse -Force "$modulepath/GPP"							
 Remove-Item -Recurse -Force $path
-Write-Host "Done! Results stored in the Capture.zip file!" -ForegroundColor Green
+Write-Host "Done! Results stored in $path" -ForegroundColor Green

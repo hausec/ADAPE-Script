@@ -17,9 +17,13 @@ This script will do the following:
 
 •	Check patches of systems on the network
 
-There's two .ps1 scripts here: LADAPE and ADAPE. LADAPE is the local version, meaning it will not reach out to the internet and fetch the modules, they must be present in the same folder as the LADAPE script. I made this because some sites don't allow connections to github, don't like the cert github has, or don't even have internet, thus the need for a full local script.
+•	Search for file servers
 
-The modules LADAPE uses are linked here and named the same way, so just download the following modules and put them in the same folder as LADAPE.ps1 and it should execute.
+•	Search attached shares 
+
+•	Gather the domain policy
+
+The script will attempt to download the required modules from Github, then erase them after it's done. However, some sites don't allow connections to Github or downloads, so it has local functionality too. To use it, just download the required modules below and store them in the same folder as this script and it will work without needing the internet.
 
 Kerberoast - https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
 
