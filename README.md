@@ -3,6 +3,8 @@ In my engagements and assessments, I often run a few powershell scripts that hel
 
 This script will do the following:
 
+•	Gather hashes via WPAD, LLMNR, and NBT-NS spoofing
+
 •	Check for GPP password (MS14-025)
 
 •	Gather hashes for accounts via Kerberoast
@@ -24,6 +26,8 @@ This script will do the following:
 •	Gather the domain policy
 
 The script will attempt to download the required modules from Github, then erase them after it's done. However, some sites don't allow connections to Github or downloads, so it has local functionality too. To use it, just download the required modules below and store them in the same folder as this script and it will work without needing the internet. I recommend doing this anyways to bypass AV. 
+
+Inveigh - https://github.com/Kevin-Robertson/Inveigh/blob/master/Scripts/Inveigh.ps1
 
 Kerberoast - https://github.com/EmpireProject/Empire/blob/master/data/module_source/credentials/Invoke-Kerberoast.ps1
 
