@@ -142,12 +142,12 @@ If(!(test-path $modulepath/Sharp))
 
 Write-Host "Fetching Sharphound.exe..."
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/master/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/raw/master/Ingestors/SharpHound.exe","$modulepath/Sharp/Sharp.exe")
 If (Test-Path $modulepath/Sharp/Sharp.exe -PathType Leaf)
 {
 	Write-Host "Download Successful" 
 	Write-Host "Running SharpHound" -ForegroundColor  Yellow
-	& "$modulepath/Sharp/Sharp.exe" --Stealth --CSVFolder $path
+	& "$modulepath/Sharp/Sharp.exe" --Stealth --JsonFolder $path
 }
 else
 {
@@ -157,7 +157,7 @@ else
 			{
 				Write-Host "Copy Successful" 
 				Write-Host "Running SharpHound" -ForegroundColor  Yellow
-				& "$modulepath/Sharp/Sharp.exe" --Stealth --CSVFolder $path
+				& "$modulepath/Sharp/Sharp.exe" --Stealth --JsonFolder $path
 			}
 		else
 			{
