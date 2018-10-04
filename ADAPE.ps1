@@ -2,11 +2,11 @@ param(
   [Parameter(Position=1)][string]$option
 )
 Write-Host "###########################################################################################################" -ForegroundColor Green
-Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.2                                    ##" -ForegroundColor Green
-Write-Host "##   Developed By @Haus3c                                                                                 ##" -ForegroundColor Green
+Write-Host "##   Active Directory Assessment and Privilege Escalation Script v1.3                                    ##" -ForegroundColor Green
+Write-Host "##   Developed By @Haus3c                                                                                ##" -ForegroundColor Green
 Write-Host "##                                                                                                       ##" -ForegroundColor Green
-Write-Host "##   Credit for .ps1s goes to Tim Medin, and the people working on Empire, BloodHound, and PowerSploit   ##" -ForegroundColor Green
-Write-Host "##                                                                                                       ##" -ForegroundColor Green
+Write-Host "##   Credit for .ps1s goes to Tim Medin, Kevin Robertson, and the people working on Empire, BloodHound,  ##" -ForegroundColor Green
+Write-Host "##   and PowerSploit                                                                                     ##" -ForegroundColor Green
 Write-Host "##   If you see errors, that's normal. Unless your computer bluescreens or something. That's not normal. ##" -ForegroundColor Green
 Write-Host "###########################################################################################################" -ForegroundColor Green
 Set-ExecutionPolicy Unrestricted
@@ -17,7 +17,6 @@ $arguments = "& '" + $myinvocation.mycommand.definition + "'"
 Start-Process powershell -Verb runAs -ArgumentList $arguments
 Break
 }
-
 $directory = split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
 Write-Host "Using directory $directory"
 Write-Host "Creating Capture folder..." 
@@ -136,7 +135,7 @@ function RunLocal
 				Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
 				Invoke-ShareFinder -CheckShareAccess -Threads 20 | Out-File $path\ShareFinder.txt
 				Write-Host "Looking for sensitive files (Grab a coffee, this might take awhile)" -ForegroundColor Yellow
-				#Edit the terms if you want to look for different strings in files. Comment out this cmdlet if it takes too long.
+#Edit the terms if you want to look for different strings in files. Comment out this cmdlet if it takes too long.
 				Invoke-FileFinder -Verbose -Terms password -OutFile $path\FileFinder.txt
 				Write-Host "Checking for exploitable systems..." -ForegroundColor Yellow
 				Get-ExploitableSystem -Verbose | Export-Csv $path\ExploitableSystem.txt
@@ -294,6 +293,6 @@ Remove-Item -Recurse -Force "$modulepath/PrivEsc"
 Remove-Item -Recurse -Force "$modulepath/Sharp"
 Remove-Item -Recurse -Force "$modulepath/PView"
 Remove-Item -Recurse -Force "$modulepath/GPP"							
-Write-Host "Done! Results stored in the Capture.zip file!" -ForegroundColor Green
+Write-Host "Done! Results stored in the Captured.zip file!" -ForegroundColor Green
 
 
