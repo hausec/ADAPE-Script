@@ -27,7 +27,9 @@ This script will do the following:
 
 There's two parameter options to use this script: 'local' or 'external'
 
-When using the local parameter, it will look for the required modules in the same folder it's being ran in, then run them. This option is recommended, as Inveigh and Powerview get caught by AV pretty quick, so I suggest "obfuscating" them so AV doesn't catch them. I wrote an article on how to do that here https://hausec.com/2018/08/23/av-evasion/
+When using the local parameter, it will look for the required modules in the same folder it's being ran in, then run them. This option is recommended, as Inveigh and Powerview get caught by AV pretty quick, so I suggest "obfuscating" them so AV doesn't catch them. I wrote an article on how to do that here
+
+https://hausec.com/2018/08/23/av-evasion/
 
 When using the external parameter, it will fetch the required modules from Github automatically and run them. Again, Powerview and Inveigh get caught by virtually all AV, so be careful. 
 
@@ -54,5 +56,7 @@ GPP password checking and searching sensitive files takes awhile, so don't be su
 
 Usage:
 PowerShell.exe -ExecutionPolicy Bypass ./ADAPE.ps1 local
+
 or 
+
 PowerShell.exe -ExecutionPolicy Bypass ./ADAPE.ps1 external
