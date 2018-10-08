@@ -196,7 +196,7 @@ function RunExternal
 	}
 		Write-Host "Fetching Sharphound.exe..."
 		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-		$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/1.5/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
+		$client.DownloadFile("https://github.com/BloodHoundAD/BloodHound/blob/master/Ingestors/SharpHound.exe?raw=true","$modulepath/Sharp/Sharp.exe")
 		If (Test-Path $modulepath/Sharp/Sharp.exe -PathType Leaf)
 		{
 			Write-Host "Download Successful" 
@@ -276,14 +276,18 @@ function RunExternal
 }
 switch ($option)
 {
-   local 
+	local 
     {
         RunLocal
     }
-   external
+	external
     {
         RunExternal 
     }
+	default
+	{
+		RunLocal
+	}
 }
 #Zip it all up and remove leftovers
 Stop-Inveigh
