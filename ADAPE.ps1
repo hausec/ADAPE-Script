@@ -286,7 +286,7 @@ switch ($option)
     }
 	default
 	{
-		RunLocal
+		RunExternal
 	}
 }
 #Zip it all up and remove leftovers
