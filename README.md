@@ -1,4 +1,8 @@
 # Active Directory Assessment and Privilege Escalation Script
+![adape](https://raw.githubusercontent.com/hausec/ADAPE-Script/dev/Screenshots/ADAPE.PNG)
+
+Let me first say I take absolutely no credit for the modules used in this script. A massive thanks to Tim Medin, Kevin Robertson, Marcello Salvati, Will Schroeder and the rest of the team at Specter Ops for the modules used in this script. Finally, thanks to Daniel Bohannon for writing Invoke-Obfuscation, which was used to obfuscate all the modules in this script. I'm just the guy that paired it all together.
+
 In my engagements and assessments, I often run a few powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I use routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. 
 
 This script will do the following:
@@ -25,13 +29,8 @@ This script will do the following:
 
 •	Gather the domain policy
 
-There's two parameter options to use this script: 'local' or 'external'
-
-When using the local parameter, it will look for the required modules in the same folder it's being ran in, then run them. This option is recommended, as Inveigh and Powerview get caught by AV pretty quick, so I suggest "obfuscating" them so AV doesn't catch them. I wrote an article on how to do that here
-
-https://hausec.com/2018/08/23/av-evasion/
-
-When using the external parameter, it will fetch the required modules from Github automatically and run them. Again, Powerview and Inveigh get caught by virtually all AV, so be careful. 
+This script will completely run on it's own, without using the internet at all. All the scripts needed are obfuscated powershell and included, so it should bypass AV completely. 
+![VirusTotal](https://github.com/hausec/ADAPE-Script/blob/dev/Screenshots/VirtusTotal.PNG?raw=true)
 
 It uses the following modules:
 
@@ -49,14 +48,9 @@ PowerView - https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/Pow
 
 The script will ask to run as admin, as it requires it. If you do not have admin access, it will only run the privilege escalation module. If you're being blocked by UAC, I suggest running a bypass UAC script (https://raw.githubusercontent.com/samratashok/nishang/master/Escalation/Invoke-PsUACme.ps1). 
 
-After running the .ps1, it will create the capture file in the same folder it's being ran in and start creating module folders to store the downloaded scripts into. 
-At the end of the script, it deletes all the folders it created (except the .zip file, obviously). 
+After running the .ps1, it will create the capture file in the same folder it's being ran in and zips it. At the end of the script, it deletes all the folders it created (except the .zip file, obviously). 
 
 GPP password checking and searching sensitive files takes awhile, so don't be surprised if this script takes a long time to finish depending on the number of domain controllers, open shares, and strings you're searching for. Comment those sections out if they take too long to run. 
 
 Usage:
-PowerShell.exe -ExecutionPolicy Bypass ./ADAPE.ps1 local
-
-or 
-
-PowerShell.exe -ExecutionPolicy Bypass ./ADAPE.ps1 external
+PowerShell.exe -ExecutionPolicy Bypass ./ADAPE.ps1
