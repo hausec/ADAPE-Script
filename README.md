@@ -1,5 +1,6 @@
 # Active Directory Assessment and Privilege Escalation Script
 ![adape](https://raw.githubusercontent.com/hausec/ADAPE-Script/dev/Screenshots/ADAPE.PNG)
+
 Let me first say I take absolutely no credit for the modules used in this script. A massive thanks to Tim Medin, Kevin Robertson, Marcello Salvati, Will Schroeder and the rest of the team at Specter Ops for the modules used in this script. Finally, thanks to Daniel Bohannon for writing Invoke-Obfuscation, which was used to obfuscate all the modules in this script. I'm just the guy that paired it all together.
 
 In my engagements and assessments, I often run a few powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I use routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. 
