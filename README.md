@@ -29,8 +29,7 @@ This script will do the following:
 
 •	Gather the domain policy
 
-This script will completely run on it's own, without using the internet at all. All the scripts needed are obfuscated powershell and included, so it should bypass AV completely. 
-![VirusTotal](https://github.com/hausec/ADAPE-Script/blob/dev/Screenshots/VirtusTotal.PNG?raw=true)
+This script will completely run on it's own, without using the internet at all. All the scripts needed are obfuscated powershell and included, so it should bypass most basic AV solutions. 
 
 It uses the following modules:
 
