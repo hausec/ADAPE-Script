@@ -30,6 +30,8 @@ $arguments = "& '" + $myinvocation.mycommand.definition + "'"
 Start-Process powershell -Verb runAs -ArgumentList $arguments
 Break
 }
+#Turn off Defender, comment out if OpSec worries you.
+Set-MpPreference -DisableRealtimeMonitoring $true
 $directory = split-path $SCRIPT:MyInvocation.MyCommand.Path -parent
 Write-Host "Using directory $directory"
 Write-Host "Creating Capture folder..." 
