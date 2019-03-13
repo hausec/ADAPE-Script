@@ -107,7 +107,7 @@ $modulepath=$env:psmodulepath.split(';')[0].split(' ')
 			Write-Host "Importing module..."
 			Import-Module Sharp.psm1
 			Write-Host "Fetching the domain and stuff" -ForegroundColor Yellow
-			Invoke-BloodHound -CollectionMethod All -JSONfolder $path
+			Invoke-BloodHound -CollectionMethod All,LoggedOn,GPOLocalGroup -Threads 50 -JSONfolder $path
 #PrivEsc
 	If(!(test-path $modulepath/PrivEsc))
 	{
