@@ -109,8 +109,13 @@ After running the .ps1, it will create the capture file in the same folder it's 
 GPP password checking and searching sensitive files takes awhile, so don't be surprised if this script takes a long time to finish depending on the number of domain controllers, open shares, and strings you're searching for. Comment those sections out if they take too long to run. 
 
 Usage:
+
 Set-ExecutionPolicy Bypass 
+
 ./ADAPE.ps1 -All
+
 or 
+
 ./ADAPE.ps1 -GPP -PView -Kerberoast
+
 etc.
