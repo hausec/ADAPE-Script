@@ -1,5 +1,5 @@
 # Active Directory Assessment and Privilege Escalation Script
-![adape](https://raw.githubusercontent.com/hausec/ADAPE-Script/dev/Screenshots/ADAPE.PNG)
+![adape](https://github.com/hausec/ADAPE-Script/blob/master/Screenshots/ADAPE.PNG)
 
 Let me first say I take absolutely no credit for the modules used in this script. A massive thanks to @TimMedin, @Kevin_Robertson, @harmj0y and @mattifestation for the modules used in this script. Finally, thanks to @DanielhBohannon for writing Invoke-Obfuscation, which was used to obfuscate all the modules in this script. I'm just the guy that paired it all together.
 
