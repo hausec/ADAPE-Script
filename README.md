@@ -51,12 +51,8 @@ GPP password checking and searching sensitive files takes awhile, so don't be su
 
 Usage:
 
-Set-ExecutionPolicy Bypass 
-
-./ADAPE.ps1 -All
-
+`Set-ExecutionPolicy Bypass `
+`./ADAPE.ps1 -All`
 or 
-
-./ADAPE.ps1 -GPP -PView -Kerberoast
-
+`./ADAPE.ps1 -GPP -PView -Kerberoast`
 etc.
