@@ -1,9 +1,9 @@
 # Active Directory Assessment and Privilege Escalation Script
 ![adape](https://github.com/hausec/ADAPE-Script/blob/master/Screenshots/ADAPE.PNG)
 
-Let me first say I take absolutely no credit for the modules used in this script. A massive thanks to @TimMedin, @Kevin_Robertson, @harmj0y and @mattifestation for the modules used in this script. Finally, thanks to @DanielhBohannon for writing Invoke-Obfuscation, which was used to obfuscate all the modules in this script. I'm just the guy that paired it all together.
+I take absolutely no credit for the modules used in this script. Thanks to the original authors for the modules used in this script, credits and links below.
 
-In my engagements and assessments, I often run a few Powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I use routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. 
+Let's be honest, this is not a red team script. If you're worried about opsec, this script is not for you as it is loud. If you don't want to mess with the hassel of downloading multiple scripts during a pentest or risk assessment, then this might just be for you. In my previous engagements and assessments, I would run a few Powershell scripts that help identify next targets, check for bad group policy settings, AD misconfigs, missing patches, etc. This script combines the ones I used routinely and autoruns the functions I use in those scripts, outputting the results into a zip file. 
 
 This script will do the following:
 
@@ -29,13 +29,12 @@ This script will do the following:
 
 •	Gather the domain policy
 
-This script will completely run on it's own, without using the internet at all. All the scripts needed are obfuscated powershell and included, so it should bypass most basic AV solutions. I understand the hesitation to run obfuscated powershell, so I won't be offended if you don't use this. If you're really curious, run it in a sandbox.
-By default, if it detects Windows 8 and above, it will add an exclusion folder to Windows Defender and then run. You can comment it out if needed.
+This script requires access to Github, as it just pulls the scripts from Github and automates the collection process. There's an AMSI bypass 1-liner in it to bypass AMSI, so if if you think that will get you caught, feel free to comment it out.
 
 The functions are built into the obfuscated script and will run in memory with the exception of Inveigh, which will create a .psm1 module in the same path this script is ran in. Here's the modules used and the functions ran:
 The script is ran with switch options, which are also shown below.
 
-Inveigh - https://github.com/Kevin-Robertson/Inveigh/blob/master/Scripts/Inveigh.ps1
+Inveigh - https://github.com/Kevin-Robertson/Inveigh/blob/master/Inveigh.ps1
 
 Functions being ran (Changeable in the script): 
 
