@@ -31,8 +31,7 @@ This script will do the following:
 
 This script requires access to Github, as it just pulls the scripts from Github and automates the collection process. There's an AMSI bypass 1-liner in it to bypass AMSI, so if if you think that will get you caught, feel free to comment it out.
 
-The functions are built into the obfuscated script and will run in memory with the exception of Inveigh, which will create a .psm1 module in the same path this script is ran in. Here's the modules used and the functions ran:
-The script is ran with switch options, which are also shown below.
+Modules used:
 
 Inveigh - https://github.com/Kevin-Robertson/Inveigh/blob/master/Inveigh.ps1
 
