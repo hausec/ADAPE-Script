@@ -86,9 +86,12 @@ New-Item -ItemType Directory -Force -Path $path | Out-Null
 Write-Host "Capture folder located at $path" -ForegroundColor Green
 Write-Host "OS Detected: $version"
 If( $OS -match "10" -or
-    $OS -match "2012" -or
-    $OS -match "2016" -or
-    $OS -match "8")
+$OS -match "2012" -or
+$OS -match "2016" -or
+$OS -match "8")
+{
+Write-Host "OS Detected: $version"
+}
 	
 #Inveigh
 function Inveigh
